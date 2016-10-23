@@ -1,11 +1,16 @@
 "use strict";
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000
 let todoNextId = 1;
 let todos = [
 
 ]
+
+//FUNCTIONS
+app.use(bodyParser.json())
+
 
 app.get('/', (req, res)=>{
   res.send('Todo API Root')
@@ -30,7 +35,20 @@ app.get('/todos/:id', (req,res)=>{
 
 // POST /todos
 app.post('/todos',(req, res)=>{
+  let body = req.body
 
+  if(typeof body.description === 'undefined' || typeof body.completed === 'undefined'){
+    console.log('Not a valid request')
+    res.send("Invalid input")
+  }else{
+    console.log('Description '+ body.description);
+
+    body.id = todoNextId
+    todoNextId += 1
+    todos.push(body)
+
+    res.json(body)
+  }
 })
 
 app.listen(port, ()=>{
