@@ -37,11 +37,14 @@ app.get('/todos/:id', (req,res)=>{
 
 // POST /todos
 app.post('/todos',(req, res)=>{
-  let body = req.body
+  let body = _.pick(req.body, 'description', 'completed')
+
+
 
   if(typeof body.description === 'string' && body.description.trim().length > 0 && typeof body.completed === 'boolean'){
-
-    console.log('Description '+ body.description);
+    body.description = body.description.trim()
+    console.log('Description: '+ body.description);
+    console.log('Status: '+body.completed);
 
     body.id = todoNextId
     todoNextId += 1
