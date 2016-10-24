@@ -35,6 +35,24 @@ app.get('/todos/:id', (req,res)=>{
   }
 })
 
+
+//DELETE /todos/:id
+app.delete('/todos/:id',(req, res)=>{
+  let reqId = parseInt(req.params.id, 10)
+  let todo = todos.find(val =>{return val.id === reqId})
+
+  if(typeof todo == 'undefined'){
+    console.log('Invalid id request');
+    res.status(404).send('Request with id '+reqId+' requested not found')
+  }else{
+    todos = _.reject(todos, val =>{return val === todo})
+
+    console.log('Deleted: ', todo);
+    res.status(200).send('Request with id '+reqId+' successfully deleted.')
+  }
+})
+
+
 // POST /todos
 app.post('/todos',(req, res)=>{
   let body = _.pick(req.body, 'description', 'completed')
