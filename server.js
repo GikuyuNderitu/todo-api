@@ -1,6 +1,9 @@
 "use strict";
 const express = require('express');
 const bodyParser = require('body-parser');
+const _ = require('underscore');
+
+
 const app = express();
 const port = process.env.PORT || 3000
 let todoNextId = 1;
@@ -23,24 +26,21 @@ app.get('/todos', (req, res)=>{
 
 //GET /todos/:id
 app.get('/todos/:id', (req,res)=>{
-  let todo = todos.find(val =>{
-    return val.id === parseInt(req.params.id, 10)
-  })
+  let todo = todos.find(val =>{return val.id === parseInt(req.params.id, 10)})
 
-  if(typeof todo == 'undefined')
+  if(typeof todo == 'undefined'){
     res.status(404).send()
-  else
+  }else{
     res.json(todo)
+  }
 })
 
 // POST /todos
 app.post('/todos',(req, res)=>{
   let body = req.body
 
-  if(typeof body.description === 'undefined' || typeof body.completed === 'undefined'){
-    console.log('Not a valid request')
-    res.send("Invalid input")
-  }else{
+  if(typeof body.description === 'string' || body.description.trim().length > 0|| typeof body.completed === 'boolean'){
+  
     console.log('Description '+ body.description);
 
     body.id = todoNextId
@@ -48,6 +48,10 @@ app.post('/todos',(req, res)=>{
     todos.push(body)
 
     res.json(body)
+  }else{
+
+    console.log('Not a valid request')
+    res.send("Invalid input")
   }
 })
 
