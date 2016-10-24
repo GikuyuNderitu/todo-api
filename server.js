@@ -39,8 +39,8 @@ app.get('/todos/:id', (req,res)=>{
 app.post('/todos',(req, res)=>{
   let body = req.body
 
-  if(typeof body.description === 'string' || body.description.trim().length > 0|| typeof body.completed === 'boolean'){
-  
+  if(typeof body.description === 'string' && body.description.trim().length > 0 && typeof body.completed === 'boolean'){
+
     console.log('Description '+ body.description);
 
     body.id = todoNextId
