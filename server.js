@@ -21,7 +21,17 @@ app.get('/', (req, res)=>{
 
 //GET /todos
 app.get('/todos', (req, res)=>{
-  res.json(todos)
+  let queryParams = req.query
+  if(queryParams.hasOwnProperty('completed')){
+    if(queryParams.completed === 'true') queryParams.completed = true
+    else if(queryParams.completed === 'false') queryParams.completed = false
+    else{return res.status(400).send('Improper query. Use true or false')}
+  }
+  let resToDos = _.where(todos,queryParams )
+
+  console.log(queryParams);
+
+  res.json(resToDos)
 })
 
 //GET /todos/:id
@@ -107,8 +117,9 @@ app.put('/todos/:id',(req, res)=>{
     console.log('Todo with id '+reqId+' was updated.\nWas: ', previous,'\n Now: ',todo);
     res.status(200).json(todo)
   }
-
 })
+
+
 
 
 app.listen(port, ()=>{
