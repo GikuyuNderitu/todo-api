@@ -22,12 +22,30 @@ app.get('/', (req, res)=>{
 //GET /todos
 app.get('/todos', (req, res)=>{
   let queryParams = req.query
+  let resToDos = _.clone(todos)
   if(queryParams.hasOwnProperty('completed')){
-    if(queryParams.completed === 'true') queryParams.completed = true
-    else if(queryParams.completed === 'false') queryParams.completed = false
-    else{return res.status(400).send('Improper query. Use true or false')}
+    if(queryParams.completed === 'true'){
+      resToDos = _.where(resToDos,{completed: 'true'})
+    }else if(queryParams.completed === 'false'){
+      resToDos = _.where(resToDos,{completed: 'false'})
+    }else{
+      return res.status(400).send('Improper query. Use true or false')
+    }
   }
-  let resToDos = _.where(todos,queryParams )
+
+  if(queryParams.hasOwnProperty('q')){
+    if(queryParams.q.length>0){
+      resToDos = resToDos.filter(val =>{return val.description.indexOf(queryParams.q) >= 0})
+      console.log(resToDos);
+      res.status(200).send(resToDos)
+    }
+    else{
+      console.log('Malformed search for description');
+      return res.status(400).send('Improper description search query. Use 1 or more characters')
+    }
+  }
+
+  resToDos = _.where(todos,queryParams )
 
   console.log(queryParams);
 
