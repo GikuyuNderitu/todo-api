@@ -25,9 +25,9 @@ app.get('/todos', (req, res)=>{
   let resToDos = _.clone(todos)
   if(queryParams.hasOwnProperty('completed')){
     if(queryParams.completed === 'true'){
-      resToDos = _.where(resToDos,{completed: 'true'})
+      resToDos = _.where(resToDos,{completed: true})
     }else if(queryParams.completed === 'false'){
-      resToDos = _.where(resToDos,{completed: 'false'})
+      resToDos = _.where(resToDos,{completed: false})
     }else{
       return res.status(400).send('Improper query. Use true or false')
     }
@@ -37,7 +37,6 @@ app.get('/todos', (req, res)=>{
     if(queryParams.q.length>0){
       resToDos = resToDos.filter(val =>{return val.description.indexOf(queryParams.q) >= 0})
       console.log(resToDos);
-      res.status(200).send(resToDos)
     }
     else{
       console.log('Malformed search for description');
@@ -45,9 +44,9 @@ app.get('/todos', (req, res)=>{
     }
   }
 
-  resToDos = _.where(todos,queryParams )
+  // resToDos = _.where(todos,queryParams )
 
-  console.log(queryParams);
+  console.log(queryParams,resToDos);
 
   res.json(resToDos)
 })
