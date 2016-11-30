@@ -1,0 +1,17 @@
+'use strict'
+module.exports = function (sequelize, DataTypes) {
+  return sequelize.define('todo',{
+    description:{
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [2,300]
+      }
+    },
+    completed:{
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    }
+  })
+};

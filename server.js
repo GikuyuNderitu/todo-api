@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('underscore');
+const db = require('./db.js');
 
 
 const app = express();
@@ -136,9 +137,9 @@ app.put('/todos/:id',(req, res)=>{
   }
 })
 
-
-
-
-app.listen(port, ()=>{
-  console.log('Express lisening on port '+port +'.');
-})
+db.sequelize().sync()
+.then(
+  app.listen(port, ()=>{
+    console.log('Express lisening on port '+port +'.');
+  })
+)
