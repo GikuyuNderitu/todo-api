@@ -54,13 +54,22 @@ app.get('/todos', (req, res)=>{
 
 //GET /todos/:id
 app.get('/todos/:id', (req,res)=>{
-  let todo = todos.find(val =>{return val.id === parseInt(req.params.id, 10)})
 
-  if(typeof todo == 'undefined'){
-    res.status(404).send()
-  }else{
-    res.json(todo)
-  }
+  db.todo.findById(req.params.id)
+  .then(todo=>{
+    if(!!todo) res.json(todo)
+    else res.status(404).send('<h1>Data Requested does not exist</h1>')
+  })
+  .catch(e=>{
+    res.status(500).send()
+  })
+  // let todo = todos.find(val =>{return val.id === parseInt(req.params.id, 10)})
+  //
+  // if(typeof todo == 'undefined'){
+  //   res.status(404).send()
+  // }else{
+  //   res.json(todo)
+  //}
 })
 
 
