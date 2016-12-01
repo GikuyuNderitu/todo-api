@@ -22,34 +22,28 @@ app.get('/', (req, res)=>{
 
 //GET /todos
 app.get('/todos', (req, res)=>{
-  let queryParams = req.query
-  let resToDos = _.clone(todos)
-  if(queryParams.hasOwnProperty('completed')){
-    if(queryParams.completed === 'true'){
-      resToDos = _.where(resToDos,{completed: true})
-    }else if(queryParams.completed === 'false'){
-      resToDos = _.where(resToDos,{completed: false})
-    }else{
-      return res.status(400).send('Improper query. Use true or false')
-    }
+  let query = req.query
+  let where = {}
+
+  if(query.hasOwnProperty('completed')) {
+    if(query.completed === 'true') where.completed = true
+    else if (query.completed === 'false') where.completed = false
+  }
+  if(query.hasOwnProperty('q')){
+    where.description = {}
+    where.description.$like = '%'+query.q+'%'
   }
 
-  if(queryParams.hasOwnProperty('q')){
-    if(queryParams.q.length>0){
-      resToDos = resToDos.filter(val =>{return val.description.indexOf(queryParams.q) >= 0})
-      console.log(resToDos);
-    }
-    else{
-      console.log('Malformed search for description');
-      return res.status(400).send('Improper description search query. Use 1 or more characters')
-    }
-  }
+  console.log('Where object is: ',where);
 
-  // resToDos = _.where(todos,queryParams )
-
-  console.log(queryParams,resToDos);
-
-  res.json(resToDos)
+  db.todo.findAll({where})
+  .then( todos =>{
+    if(!!todos) res.json(todos)
+    else res.status(404).send('<h1>The Requested To Do Does Not Exist</h1>')
+  })
+  .catch(e =>{
+    res.status(500).send('<h1>Unnexpected Error Occurred</h1>')
+  })
 })
 
 //GET /todos/:id
