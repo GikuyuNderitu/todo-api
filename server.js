@@ -94,22 +94,6 @@ app.post('/todos',(req, res)=>{
     console.error(e);
     res.status(400).json(e)
   })
-
-  // if(typeof body.description === 'string' && body.description.trim().length > 0 && typeof body.completed === 'boolean'){
-  //   body.description = body.description.trim()
-  //   console.log('Description: '+ body.description);
-  //   console.log('Status: '+body.completed);
-  //
-  //   body.id = todoNextId
-  //   todoNextId += 1
-  //   todos.push(body)
-  //
-  //   res.json(body)
-  // }else{
-  //
-  //   console.log('Not a valid request')
-  //   res.send("Invalid input")
-  // }
 })
 
 
