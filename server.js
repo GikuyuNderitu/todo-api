@@ -85,23 +85,31 @@ app.delete('/todos/:id',(req, res)=>{
 app.post('/todos',(req, res)=>{
   let body = _.pick(req.body, 'description', 'completed')
 
+  db.todo.create(body)
+  .then(todo =>{
+    console.log(todo);
+    res.json(todo)
+  })
+  .catch( e =>{
+    console.error(e);
+    res.status(400).json(e)
+  })
 
-
-  if(typeof body.description === 'string' && body.description.trim().length > 0 && typeof body.completed === 'boolean'){
-    body.description = body.description.trim()
-    console.log('Description: '+ body.description);
-    console.log('Status: '+body.completed);
-
-    body.id = todoNextId
-    todoNextId += 1
-    todos.push(body)
-
-    res.json(body)
-  }else{
-
-    console.log('Not a valid request')
-    res.send("Invalid input")
-  }
+  // if(typeof body.description === 'string' && body.description.trim().length > 0 && typeof body.completed === 'boolean'){
+  //   body.description = body.description.trim()
+  //   console.log('Description: '+ body.description);
+  //   console.log('Status: '+body.completed);
+  //
+  //   body.id = todoNextId
+  //   todoNextId += 1
+  //   todos.push(body)
+  //
+  //   res.json(body)
+  // }else{
+  //
+  //   console.log('Not a valid request')
+  //   res.send("Invalid input")
+  // }
 })
 
 
@@ -137,7 +145,7 @@ app.put('/todos/:id',(req, res)=>{
   }
 })
 
-db.sequelize().sync()
+db.sequelize.sync()
 .then(
   app.listen(port, ()=>{
     console.log('Express lisening on port '+port +'.');
