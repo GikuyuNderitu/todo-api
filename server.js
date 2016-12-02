@@ -69,18 +69,35 @@ app.get('/todos/:id', (req,res)=>{
 
 //DELETE /todos/:id
 app.delete('/todos/:id',(req, res)=>{
-  let reqId = parseInt(req.params.id, 10)
-  let todo = todos.find(val =>{return val.id === reqId})
+  db.todo.findById(req.params.id)
+  .then(todo =>{
+    if(!!todo){
+      db.todo.destroy({
+        where:{
+          id: req.params.id
+        }
+      })
+      .then( row => {
+        res.send('You deleted '+row+' with the following content:\n'+JSON.stringify(todo))
+      })
+    }else res.status(404).send('<h1>The Id of the Record You Requested to Delete Does Not Exist.</h1>')
+  })
+  .catch(e => {
+    res.status(500).send('<h1>Something Funky Happened!</h1>')
+  })
 
-  if(typeof todo == 'undefined'){
-    console.log('Invalid id request');
-    res.status(404).send('Request with id '+reqId+' requested not found')
-  }else{
-    todos = _.reject(todos, val =>{return val === todo})
 
-    console.log('Deleted: ', todo);
-    res.status(200).send('Request with id '+reqId+' successfully deleted.')
-  }
+  // let todo = todos.find(val =>{return val.id === reqId})
+  //
+  // if(typeof todo == 'undefined'){
+  //   console.log('Invalid id request');
+  //   res.status(404).send('Request with id '+reqId+' requested not found')
+  // }else{
+  //   todos = _.reject(todos, val =>{return val === todo})
+  //
+  //   console.log('Deleted: ', todo);
+  //   res.status(200).send('Request with id '+reqId+' successfully deleted.')
+  // }
 })
 
 
