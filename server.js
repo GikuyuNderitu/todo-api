@@ -119,34 +119,41 @@ app.post('/todos',(req, res)=>{
 
 //PUT(update) /todos/:id
 app.put('/todos/:id',(req, res)=>{
-  let body = _.pick(req.body, 'description', 'completed')
-
-  let validAttributes = {};
-
-  if(body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0 ) validAttributes.description = body.description
-  else if(body.hasOwnProperty('description')){
-    console.log('Malformed description');
-    return res.status(400).send('Malformed description')
-  }
-  if(body.hasOwnProperty('completed') && _.isBoolean(body.completed)) validAttributes.completed = body.completed
-  else if (body.hasOwnProperty('completed')) {
-    console.log('Malformed completion status');
-    return res.status(400).send('Malformed description')
-  }
-
   let reqId = parseInt(req.params.id, 10)
-  let todo = todos.find(val =>{return val.id === reqId})
+  let body = _.pick(req.body, 'description', 'completed')
+  let attributes = {};
 
-  if(typeof todo == 'undefined'){
-    console.log('Invalid id request');
-    res.status(404).send('Request with id '+reqId+' requested not found')
-  }else{
-    let previous = _.clone(todo)
-    todo.description = validAttributes.description
-    todo.completed = validAttributes.completed
-    console.log('Todo with id '+reqId+' was updated.\nWas: ', previous,'\n Now: ',todo);
-    res.status(200).json(todo)
-  }
+  if(body.hasOwnProperty('description'))
+    attributes.description = body.description
+  if(body.hasOwnProperty('completed'))
+    attributes.completed = body.completed
+
+  db.todo.findById(reqId)
+  .then(todo =>{
+    if(!!todo)
+      return todo.update(attributes)
+    else
+      res.status(404).send('<h1>Record with id '+reqID+' could not be found. Update cancelled.</h1>')
+  })
+  .then(todo =>{
+    res.json(todo)
+  }, e=>{
+    res.status(400).json('<h1>Your request included invalid syntax.</h1>',e.toJSON())
+  })
+  .catch(e =>{
+    res.status(500).send('<h1>Something Funky Happned!</h1>')
+  })
+
+  // if(typeof todo == 'undefined'){
+  //   console.log('Invalid id request');
+  //   res.status(404).send('Request with id '+reqId+' requested not found')
+  // }else{
+  //   let previous = _.clone(todo)
+  //   todo.description = attributes.description
+  //   todo.completed = attributes.completed
+  //   console.log('Todo with id '+reqId+' was updated.\nWas: ', previous,'\n Now: ',todo);
+  //   res.status(200).json(todo)
+  // }
 })
 
 db.sequelize.sync()
