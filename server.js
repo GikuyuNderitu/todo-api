@@ -151,7 +151,7 @@ app.post('/users', (req, res) =>{
 
   db.user.create(body)
   .then(user =>{
-    res.status(200).send("<div><h1>CONGRATULATIONS</h1></div><div><h3>You've created the user "+body.email+"! </h3></div>")
+    res.status(200).send("<div><h1>CONGRATULATIONS</h1></div><div><h3>You've created the user "+body.email+"! </h3></div> <div>"+JSON.stringify(user.toPublicJSON())+"</div>")
   })
   .catch(e =>{
     res.status(400).send("<h1>FIX YO USER REQUEST MAN</h1>\n"+JSON.stringify(e,null,3))
@@ -159,7 +159,7 @@ app.post('/users', (req, res) =>{
 })
 
 
-db.sequelize.sync({force: true})
+db.sequelize.sync()
 .then(
   app.listen(port, ()=>{
     console.log('Express lisening on port '+port +'.');
