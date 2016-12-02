@@ -154,7 +154,7 @@ app.post('/users', (req, res) =>{
     res.status(200).send("<div><h1>CONGRATULATIONS</h1></div><div><h3>You've created the user "+body.email+"! </h3></div>")
   })
   .catch(e =>{
-    res.status(400).send("<h1>FIX YO USER REQUEST MAN</h1>\n"+JSON.stringify(e))
+    res.status(400).send("<h1>FIX YO USER REQUEST MAN</h1>\n"+JSON.stringify(e,null,3))
   })
 })
 
