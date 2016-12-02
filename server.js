@@ -143,20 +143,23 @@ app.put('/todos/:id',(req, res)=>{
   .catch(e =>{
     res.status(500).send('<h1>Something Funky Happned!</h1>')
   })
-
-  // if(typeof todo == 'undefined'){
-  //   console.log('Invalid id request');
-  //   res.status(404).send('Request with id '+reqId+' requested not found')
-  // }else{
-  //   let previous = _.clone(todo)
-  //   todo.description = attributes.description
-  //   todo.completed = attributes.completed
-  //   console.log('Todo with id '+reqId+' was updated.\nWas: ', previous,'\n Now: ',todo);
-  //   res.status(200).json(todo)
-  // }
 })
 
-db.sequelize.sync()
+// POST /users
+app.post('/users', (req, res) =>{
+  let body = _.pick(req.body, 'email', 'password')
+
+  db.user.create(body)
+  .then(user =>{
+    res.status(200).send("<div><h1>CONGRATULATIONS</h1></div><div><h3>You've created the user "+body.email+"! </h3></div>")
+  })
+  .catch(e =>{
+    res.status(400).send("<h1>FIX YO USER REQUEST MAN</h1>\n"+JSON.stringify(e))
+  })
+})
+
+
+db.sequelize.sync({force: true})
 .then(
   app.listen(port, ()=>{
     console.log('Express lisening on port '+port +'.');
