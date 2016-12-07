@@ -158,6 +158,14 @@ app.post('/users', (req, res) =>{
   })
 })
 
+//POST /users/login
+app.post('/users/login', (req, res) => {
+  let body = _.pick(req.body, 'email', 'password')
+
+  if(!(typeof body.email === 'string' && typeof body.password === 'string')) res.status(400).send('<h1>Make sure to supply a valid email or password!</h1>')
+  else res.json(body)
+})
+
 
 db.sequelize.sync()
 .then(
